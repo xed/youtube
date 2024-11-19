@@ -17,7 +17,7 @@ const (
 )
 
 var testClient = Client{}
-var testWebClient = Client{client: &WebClient}
+var testWebClient = Client{ClientInfo: &WebClient}
 
 func TestParseVideo(t *testing.T) {
 	video, err := testClient.GetVideo(dwlURL)
@@ -103,7 +103,7 @@ func TestGetVideoWithoutManifestURL(t *testing.T) {
 	assert.GreaterOrEqual(video.Duration, 1390*time.Second)
 	assert.Contains(video.Description, "Go is often described as a simple language.")
 
-	// Publishing date doesn't seem to be present in android client
+	// Publishing date doesn't seem to be present in android ClientInfo
 	// assert.Equal("2015-12-02 00:00:00 +0000 UTC", video.PublishDate.String())
 }
 
@@ -130,7 +130,7 @@ func TestWebClientGetVideoWithoutManifestURL(t *testing.T) {
 	assert.GreaterOrEqual(video.Duration, 1390*time.Second)
 	assert.Contains(video.Description, "Go is often described as a simple language.")
 
-	// Publishing date and channel handle are present in web client
+	// Publishing date and channel handle are present in web ClientInfo
 	//assert.Equal("2015-12-02 00:00:00 +0000 UTC", video.PublishDate.String())
 
 	assert.Equal("@dotconferences", video.ChannelHandle)

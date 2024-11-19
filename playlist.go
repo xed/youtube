@@ -82,7 +82,7 @@ func (p *Playlist) parsePlaylistInfo(ctx context.Context, client *Client, body [
 		return ErrPlaylistStatus{Reason: message}
 	}
 
-	// Metadata can be located in multiple places depending on client type
+	// Metadata can be located in multiple places depending on ClientInfo type
 	var metadata *sjson.Json
 	if node, ok := j.CheckGet("metadata"); ok {
 		metadata = node
@@ -113,7 +113,7 @@ func (p *Playlist) parsePlaylistInfo(ctx context.Context, client *Client, body [
 	firstPart := getFirstKeyJSON(contents).GetPath("tabs").GetIndex(0).
 		GetPath("tabRenderer", "content", "sectionListRenderer", "contents").GetIndex(0)
 
-	// This extra nested item is only set with the web client
+	// This extra nested item is only set with the web ClientInfo
 	if n := firstPart.GetPath("itemSectionRenderer", "contents").GetIndex(0); isValidJSON(n) {
 		firstPart = n
 	}
@@ -143,9 +143,9 @@ func (p *Playlist) parsePlaylistInfo(ctx context.Context, client *Client, body [
 	p.Videos = entries
 
 	for continuation != "" {
-		data := prepareInnertubePlaylistData(continuation, true, *client.client)
+		data := prepareInnertubePlaylistData(continuation, true, *client.ClientInfo)
 
-		body, err := client.httpPostBodyBytes(ctx, "https://www.youtube.com/youtubei/v1/browse?key="+client.client.key, data)
+		body, err := client.httpPostBodyBytes(ctx, "https://www.youtube.com/youtubei/v1/browse?key="+client.ClientInfo.key, data)
 		if err != nil {
 			return err
 		}

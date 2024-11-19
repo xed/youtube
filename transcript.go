@@ -82,12 +82,12 @@ func parseTranscript(body []byte) (VideoTranscript, error) {
 	}
 
 	if len(resp.Actions) > 0 {
-		// Android client response
+		// Android ClientInfo response
 		if app := resp.Actions[0].AppSegment; app != nil {
 			return getSegments(app)
 		}
 
-		// Web client response
+		// Web ClientInfo response
 		if web := resp.Actions[0].WebSegment; web != nil {
 			return nil, fmt.Errorf("not implemented")
 		}
