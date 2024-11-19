@@ -51,6 +51,18 @@ type Client struct {
 	consentID string
 }
 
+func NewClientInfo(name, version, key, userAgent string, androidVersion int) *ClientInfo {
+	c := ClientInfo{
+		name:           name,
+		version:        version,
+		key:            key,
+		userAgent:      userAgent,
+		androidVersion: androidVersion,
+	}
+
+	return &c
+}
+
 func (c *Client) assureClient() {
 	if c.ClientInfo == nil {
 		c.ClientInfo = &DefaultClient
