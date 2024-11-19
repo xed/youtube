@@ -159,7 +159,7 @@ type contentPlaybackContext struct {
 }
 
 type inntertubeContext struct {
-	Client innertubeClient `json:"ClientInfo"`
+	Client innertubeClient `json:"client"`
 }
 
 type innertubeClient struct {
