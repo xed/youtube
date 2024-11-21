@@ -104,7 +104,7 @@ func readCookies(path string) (http.CookieJar, error) {
 	return jar, nil
 }
 
-func ReadCookiesText(cookies string) (http.CookieJar, error) {
+func ReadCookiesTextToJar(cookies string) (http.CookieJar, error) {
 	jar := Cookies{}
 
 	lines := strings.Split(cookies, "\n")
@@ -142,4 +142,44 @@ func ReadCookiesText(cookies string) (http.CookieJar, error) {
 	}
 
 	return jar, nil
+}
+
+func ReadCookiesText(cookies string) ([]*http.Cookie, error) {
+	var httpCookie []*http.Cookie
+
+	lines := strings.Split(cookies, "\n")
+
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
+
+		if !strings.HasPrefix(line, ".") {
+			continue
+		}
+
+		fields := strings.Split(line, "\t")
+		if len(fields) < 7 {
+			continue
+		}
+
+		ts, err := strconv.ParseInt(fields[4], 10, 64)
+		if err != nil {
+			continue
+		}
+		exp := time.Unix(int64(ts), 0)
+		if exp.IsZero() {
+			continue
+		}
+
+		httpCookie = append(httpCookie, &http.Cookie{
+			Domain:  fields[0],
+			Path:    fields[2],
+			Expires: exp,
+			Name:    fields[5],
+			Value:   fields[6],
+		})
+	}
+
+	return httpCookie, nil
 }

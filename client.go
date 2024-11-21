@@ -49,6 +49,8 @@ type Client struct {
 	ClientInfo *ClientInfo
 
 	consentID string
+
+	Cookies []*http.Cookie
 }
 
 func NewClientInfo(name, version, key, userAgent string, androidVersion int) *ClientInfo {
@@ -502,12 +504,16 @@ func (c *Client) httpDo(req *http.Request) (*http.Response, error) {
 		c.consentID = strconv.Itoa(rand.Intn(899) + 100) //nolint:gosec
 	}
 
-	//req.AddCookie(&http.Cookie{
-	//	Name:   "CONSENT",
-	//	Value:  "YES+cb.20210328-17-p0.en+FX+" + c.consentID,
-	//	Path:   "/",
-	//	Domain: ".youtube.com",
-	//})
+	c.Cookies = append(c.Cookies, &http.Cookie{
+		Name:   "CONSENT",
+		Value:  "YES+cb.20210328-17-p0.en+FX+" + c.consentID,
+		Path:   "/",
+		Domain: ".youtube.com",
+	})
+
+	for _, cookie := range c.Cookies {
+		req.AddCookie(cookie)
+	}
 
 	res, err := client.Do(req)
 
